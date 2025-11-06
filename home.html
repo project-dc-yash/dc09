@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resume Builder · Analyzer · Job Recommender
+        </title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<style>
+    /* --- LOGIN PAGE STYLES --- */
+
+.login-body {
+    background-color: #fff; /* Ensure a clean white background */
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* Start from the top, not centered vertically */
+    padding-top: 50px; /* Space from the top */
+}
+
+.login-container {
+    width: 100%;
+    max-width: 450px;
+    padding: 20px;
+}
+
+.login-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.back-link {
+    color: #000;
+    font-size: 24px;
+    margin-right: 20px;
+    text-decoration: none;
+}
+
+.login-logo {
+    font-size: 32px;
+    font-weight: bold;
+    color: #000;
+}
+
+.login-card {
+    background-color: #fff;
+    padding: 20px 0;
+}
+
+.login-card h2 {
+    font-size: 28px;
+    margin-bottom: 30px;
+    font-weight: 500;
+}
+
+.auth-input {
+    width: 100%;
+    padding: 15px 10px;
+    font-size: 16px;
+    border: none;
+    border-bottom: 2px solid #ccc;
+    outline: none;
+    margin-bottom: 20px;
+    transition: border-bottom-color 0.3s;
+}
+
+.auth-input:focus {
+    border-bottom-color: #000;
+}
+
+.login-btn {
+    margin-bottom: 30px;
+}
+
+/* Divider for "or" */
+.divider {
+    text-align: center;
+    margin: 20px 0;
+    position: relative;
+    color: #888;
+}
+
+.divider::before, .divider::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 40%;
+    height: 1px;
+    background: #ccc;
+}
+
+.divider::before {
+    left: 0;
+}
+
+.divider::after {
+    right: 0;
+}
+
+/* Social Buttons */
+.btn-social {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    color: #000;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.btn-social:hover {
+    background-color: #f0f0f0;
+}
+
+.btn-social i {
+    margin-right: 10px;
+    font-size: 18px;
+}
+
+.terms-text {
+    font-size: 12px;
+    color: #888;
+    margin-top: 30px;
+    text-align: center;
+}
+
+.terms-text a {
+    color: #000;
+    text-decoration: none;
+}
+
+@media (max-width: 500px) {
+    .login-body {
+        padding-top: 20px;
+    }
+    .login-container {
+        padding: 0 10px;
+    }
+    /* Add this to style.css */
+.continue-link {
+    /* Ensures the anchor tag takes up the full width and height defined by the padding */
+    display: block; 
+    text-align: center; /* Centers the text inside the link */
+    text-decoration: none; /* Removes the default link underline */
+}
+
+}
+</style>
+<body class="login-body">
+    <div class="login-container">
+        <div class="login-header">
+            <a href="index.html" class="back-link">
+                <i class="fas fa-arrow-left"></i>
+            </a>
+            <div class="login-logo">Uber</div>
+        </div>
+
+        <div class="login-card">
+            <h2>What's your phone number or email?</h2>
+
+            <div class="form-group">
+                <input type="text" placeholder="Enter phone number or email" class="auth-input">
+            </div>
+
+            <a href="map.html" class="btn-primary login-btn continue-link">Continue</a>
+            
+            <div class="divider">or</div>
+
+            <button class="btn-social google-btn">
+                <i class="fab fa-google"></i> Continue with Google
+            </button>
+            
+            <button class="btn-social apple-btn">
+                <i class="fab fa-apple"></i> Continue with Apple
+            </button>
+            
+            <button class="btn-social facebook-btn">
+                <i class="fab fa-facebook-f"></i> Continue with Facebook
+            </button>
+            
+            <p class="terms-text">
+                Resume Builder · Analyzer · Job Recommender
+ <a href="#">Terms of Use</a> and acknowledge you have read our <a href="#">Privacy Policy</a>.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

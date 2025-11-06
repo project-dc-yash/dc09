@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Resume Builder · Analyzer · Job Recommender</title>
+  <style>
+    :root{
+      --bg: #0b1020;
+      --card: #11172b;
+      --muted: #98a2b3;
+      --text: #e9edf6;
+      --brand: #6ea8ff;
+      --accent: #8b5cf6;
+      --ok: #22c55e;
+      --warn: #f59e0b;
+      --bad: #ef4444;
+      --chip: #1b2542;
+      --border: #27314e;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 18px;
+      --radius-sm: 12px;
+      --radius-xs: 9px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      background: radial-gradient(1200px 600px at 80% -20%, #1a2450 0%, rgba(26,36,80,0) 70%), var(--bg);
+      color:var(--text);
+      font: 16px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji";
+    }
+
+    /* Layout */
+    .shell{max-width:1200px;margin:0 auto;padding:28px}
+    header{
+      display:flex;align-items:center;gap:16px;margin-bottom:24px;
+    }
+    .logo{
+      width:42px;height:42px;border-radius:12px;display:grid;place-items:center;
+      background:linear-gradient(135deg,var(--brand),var(--accent));
+      box-shadow:var(--shadow)
+    }
+    .title h1{margin:0;font-weight:700;letter-spacing:.2px}
+    .title p{margin:2px 0 0;color:var(--muted);font-size:14px}
+
+    .grid{
+      display:grid;gap:18px;
+      grid-template-columns: 1.1fr 1fr;
+    }
+    @media (max-width: 992px){ .grid{grid-template-columns:1fr} }
+
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,0)) , var(--card);
+      border:1px solid var(--border);
+      border-radius:var(--radius);
+      box-shadow:var(--shadow);
+    }
+    .card .head{
+      padding:18px 18px 0 18px;
+      display:flex;align-items:center;justify-content:space-between;gap:16px;
+    }
+    .card .head h2{margin:0;font-size:18px}
+    .card .body{padding:18px}
+
+    /* Form */
+    .form-grid{
+      display:grid;gap:12px;
+      grid-template-columns: repeat(12, 1fr);
+    }
+    .col-6{grid-column:span 6}
+    .col-12{grid-column:span 12}
+    @media (max-width:700px){ .col-6{grid-column:span 12} }
+
+    label{display:block;font-size:13px;color:var(--muted);margin:0 0 6px}
+    input, textarea, select{
+      width:100%;padding:12px 12px;border-radius:12px;border:1px solid var(--border);
+      background:#0f1530;color:var(--text);outline:none;transition:.2s border;
+    }
+    input::placeholder, textarea::placeholder{color:#7f89a6}
+    textarea{min-height:110px;resize:vertical}
+
+    .chips{display:flex;flex-wrap:wrap;gap:8px}
+    .chip{
+      padding:6px 10px;border-radius:999px;background:var(--chip);border:1px solid var(--border);
+      font-size:12px;color:#c9d3ff
+    }
+
+    .btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    .btn{
+      padding:10px 14px;border-radius:12px;border:1px solid var(--border);
+      background:#0e1533;color:var(--text);cursor:pointer;font-weight:600
+    }
+    .btn.primary{background:linear-gradient(135deg,var(--brand),var(--accent));border-color:transparent}
+    .btn.ghost{background:transparent}
+    .btn:disabled{opacity:.6;cursor:not-allowed}
+
+    /* Preview */
+    .resume{
+      display:grid;gap:14px;
+      grid-template-columns: 1fr;
+    }
+    .resume .row{
+      border:1px dashed var(--border);border-radius:var(--radius-sm);padding:14px
+    }
+    .resume h3{margin:0 0 10px;font-size:16px}
+    .tagline{color:#c8d2ff}
+    .stack{display:flex;gap:8px;flex-wrap:wrap}
+
+    /* Analyzer */
+    .metrics{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+    @media (max-width:700px){ .metrics{grid-template-columns:1fr 1fr} }
+    .metric{
+      background:#0d1430;border:1px solid var(--border);border-radius:14px;padding:14px;
+    }
+    .metric .label{font-size:12px;color:var(--muted)}
+    .metric .value{font-size:22px;font-weight:700;margin-top:4px}
+    .bar{
+      height:8px;border-radius:999px;background:#0b1130;border:1px solid var(--border);overflow:hidden;margin-top:10px
+    }
+    .bar > i{
+      display:block;height:100%;width:62%;background:linear-gradient(90deg,var(--ok),#58b2ff)
+    }
+    .list{display:grid;gap:10px;margin-top:12px}
+    .tip{
+      background:#0e1638;border:1px solid var(--border);border-radius:12px;padding:10px;font-size:14px
+    }
+
+    /* Jobs */
+    .jobs{display:grid;gap:12px}
+    .job{
+      display:grid;gap:10px;grid-template-columns: 1fr auto;
+      background:#0d1533;border:1px solid var(--border);border-radius:14px;padding:14px;
+    }
+    .job h4{margin:0}
+    .meta{color:var(--muted);font-size:13px}
+    .kw{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+    .kw .chip{background:#0f1b47}
+
+    /* Footer */
+    footer{margin-top:22px;color:var(--muted);font-size:13px;text-align:center}
+
+    /* Print-friendly resume */
+    @media print{
+      body{background:#fff;color:#000}
+      .shell{max-width:900px}
+      header,.analyzer,.recs, footer{display:none}
+      .builder{display:none}
+      .preview{background:#fff;box-shadow:none;border:0}
+      .resume .row{border:0;padding:0}
+      .resume h3{font-size:18px}
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header aria-label="App header">
+      <div class="logo" aria-hidden="true">
+        <!-- Simple spark icon -->
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="white" aria-hidden="true">
+          <path d="M12 2l2 6 6 2-6 2-2 6-2-6-6-2 6-2z" opacity=".9"/>
+        </svg>
+      </div>
+      <div class="title">
+        <h1>Resume Builder · Analyzer · Job Recommender</h1>
+        <p>Design your resume, see instant AI-style insights, and surface tailored roles. (Add JS/ML later.)</p>
+      </div>
+    </header>
+
+    <div class="grid">
+      <!-- Left: Builder + Preview -->
+      <section class="card builder" id="builder">
+        <div class="head">
+          <h2>1) Resume Builder</h2>
+          <div class="chips" aria-label="Supported exports">
+            <span class="chip">PDF-ready</span>
+            <span class="chip">ATS-friendly</span>
+            <span class="chip">No libs</span>
+          </div>
+        </div>
+        <div class="body">
+          <form class="form-grid" data-form="resume">
+            <div class="col-6">
+              <label for="fullName">Full Name</label>
+              <input id="fullName" name="fullName" placeholder="e.g., Anjali Chougule" />
+            </div>
+            <div class="col-6">
+              <label for="headline">Headline</label>
+              <input id="headline" name="headline" placeholder="e.g., Full-Stack Developer · GenAI" />
+            </div>
+            <div class="col-6">
+              <label for="email">Email</label>
+              <input id="email" name="email" placeholder="you@example.com" />
+            </div>
+            <div class="col-6">
+              <label for="phone">Phone</label>
+              <input id="phone" name="phone" placeholder="+91 9XXXXXXXXX" />
+            </div>
+            <div class="col-12">
+              <label for="summary">Professional Summary</label>
+              <textarea id="summary" name="summary" placeholder="3–4 lines about your impact, tools, and metrics."></textarea>
+            </div>
+
+            <div class="col-12">
+              <label for="skills">Skills (comma-separated)</label>
+              <input id="skills" name="skills" placeholder="Python, TensorFlow, LLMs, Prompt Engineering, React, Docker" />
+            </div>
+
+            <div class="col-12">
+              <label for="experience">Experience</label>
+              <textarea id="experience" name="experience" placeholder="• Role @ Company (MM/YYYY–MM/YYYY): Key accomplishments with metrics&#10;• Role @ Company: …"></textarea>
+            </div>
+
+            <div class="col-12">
+              <label for="projects">Projects</label>
+              <textarea id="projects" name="projects" placeholder="• Project: what, how (tech), impact/metrics&#10;• Project: …"></textarea>
+            </div>
+
+            <div class="col-6">
+              <label for="education">Education</label>
+              <textarea id="education" name="education" placeholder="B.E./B.Tech – College, CGPA, Year"></textarea>
+            </div>
+            <div class="col-6">
+              <label for="links">Links</label>
+              <textarea id="links" name="links" placeholder="GitHub: …&#10;Portfolio: …&#10;LinkedIn: …"></textarea>
+            </div>
+
+            <div class="col-12 btns">
+              <button type="button" class="btn primary" id="btnPreview" data-action="preview">Update Preview</button>
+              <button type="button" class="btn" id="btnAnalyze" data-action="analyze">Analyze Resume</button>
+              <button type="button" class="btn ghost" id="btnRecommend" data-action="recommend">Generate Job Matches</button>
+              <button type="button" class="btn ghost" id="btnPrint" onclick="window.print()">Print / Save PDF</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="head">
+          <h2>2) Live Preview</h2>
+          <div class="chips">
+            <span class="chip">ATS-friendly layout</span>
+          </div>
+        </div>
+        <div class="body preview" id="preview" aria-live="polite">
+          <article class="resume" role="article" aria-label="Resume Preview">
+            <div class="row">
+              <h3 id="pv-name">Your Name</h3>
+              <div class="tagline" id="pv-headline">Role / Headline</div>
+              <div class="meta" id="pv-contact">email@example.com · +91 XXXXX XXXXX</div>
+            </div>
+
+            <div class="row">
+              <h3>Summary</h3>
+              <p id="pv-summary">Write a concise 3–4 line summary highlighting outcomes, scale, and tools.</p>
+            </div>
+
+            <div class="row">
+              <h3>Skills</h3>
+              <div class="stack" id="pv-skills">
+                <span class="chip">Python</span><span class="chip">TensorFlow</span><span class="chip">React</span>
+              </div>
+            </div>
+
+            <div class="row">
+              <h3>Experience</h3>
+              <div id="pv-experience">
+                <p>• Role @ Company (2023–2025): improved X by Y% using Z.</p>
+              </div>
+            </div>
+
+            <div class="row">
+              <h3>Projects</h3>
+              <div id="pv-projects">
+                <p>• Project: brief what/how, tools, impact/metrics.</p>
+              </div>
+            </div>
+
+            <div class="row">
+              <h3>Education & Links</h3>
+              <div id="pv-edu">B.E. – College Name, CGPA, Year</div>
+              <div id="pv-links" class="kw" style="margin-top:8px">
+                <span class="chip">GitHub/username</span>
+                <span class="chip">linkedin.com/in/…</span>
+              </div>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- Right: Analyzer + Recommendations -->
+      <section class="card analyzer" id="analyzer">
+        <div class="head">
+          <h2>3) Resume Analyzer (AI-style)</h2>
+          <div class="chips"><span class="chip">Placeholders ready</span></div>
+        </div>
+        <div class="body">
+          <div class="metrics" aria-label="Scoring metrics">
+            <div class="metric">
+              <div class="label">ATS Score</div>
+              <div class="value" id="m-ats">62</div>
+              <div class="bar"><i style="width:62%"></i></div>
+            </div>
+            <div class="metric">
+              <div class="label">Keyword Match</div>
+              <div class="value" id="m-km">68</div>
+              <div class="bar"><i style="width:68%"></i></div>
+            </div>
+            <div class="metric">
+              <div class="label">Impact Density</div>
+              <div class="value" id="m-impact">54</div>
+              <div class="bar"><i style="width:54%"></i></div>
+            </div>
+          </div>
+
+          <div class="list" id="tips">
+            <div class="tip">Use quantified outcomes: “Cut inference latency by 32% using ONNX + TensorRT.”</div>
+            <div class="tip">Front-load keywords relevant to target roles (e.g., “RAG, LangChain, Vector DB”).</div>
+            <div class="tip">Keep bullets to 1–2 lines, start with a strong verb, end with a metric.</div>
+          </div>
+        </div>
+
+        <div class="head">
+          <h2>4) Job Recommendations</h2>
+          <div class="chips"><span class="chip">Tailored by skills</span></div>
+        </div>
+        <div class="body recs">
+          <div class="jobs" id="jobs">
+            <!-- Example static cards (replace via JS/ML later) -->
+            <article class="job" data-job-id="ex-1">
+              <div>
+                <h4>Generative AI Engineer</h4>
+                <div class="meta">Bengaluru · Hybrid · 7–10 LPA</div>
+                <div class="kw">
+                  <span class="chip">LLMs</span><span class="chip">RAG</span><span class="chip">LangChain</span>
+                </div>
+              </div>
+              <div class="btns">
+                <button class="btn">View</button>
+                <button class="btn primary">Apply</button>
+              </div>
+            </article>
+
+            <article class="job" data-job-id="ex-2">
+              <div>
+                <h4>ML Engineer (NLP)</h4>
+                <div class="meta">Pune · Onsite · 6–9 LPA</div>
+                <div class="kw">
+                  <span class="chip">Transformers</span><span class="chip">MLOps</span><span class="chip">PyTorch</span>
+                </div>
+              </div>
+              <div class="btns">
+                <button class="btn">View</button>
+                <button class="btn primary">Apply</button>
+              </div>
+            </article>
+
+            <article class="job" data-job-id="ex-3">
+              <div>
+                <h4>Full-Stack + AI</h4>
+                <div class="meta">Remote · 8–12 LPA</div>
+                <div class="kw">
+                  <span class="chip">React</span><span class="chip">Node.js</span><span class="chip">Vector DB</span>
+                </div>
+              </div>
+              <div class="btns">
+                <button class="btn">View</button>
+                <button class="btn primary">Apply</button>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <footer>
+      <span>Tip:</span> Connect these UI hooks to your Gen-AI/ML services:
+      <code>data-action="preview|analyze|recommend"</code>, and IDs like <code>#preview</code>, <code>#m-ats</code>, <code>#jobs</code>.
+    </footer>
+  </div>
+
+  <!-- Optional tiny helper: update preview without extra JS frameworks -->
+  <script>
+    (function(){
+      const $ = (s, el=document)=>el.querySelector(s);
+      const pv = {
+        name: $("#pv-name"),
+        headline: $("#pv-headline"),
+        contact: $("#pv-contact"),
+        summary: $("#pv-summary"),
+        skills: $("#pv-skills"),
+        exp: $("#pv-experience"),
+        proj: $("#pv-projects"),
+        edu: $("#pv-edu"),
+        links: $("#pv-links"),
+      };
+      const form = document.querySelector('[data-form="resume"]');
+
+      function chipsFromCSV(csv){
+        const f = document.createDocumentFragment();
+        (csv||"").split(",").map(s=>s.trim()).filter(Boolean).forEach(v=>{
+          const span = document.createElement("span");
+          span.className="chip"; span.textContent=v; f.appendChild(span);
+        });
+        return f;
+      }
+
+      function updatePreview(){
+        const data = Object.fromEntries(new FormData(form).entries());
+        pv.name.textContent = data.fullName || "Your Name";
+        pv.headline.textContent = data.headline || "Role / Headline";
+        pv.contact.textContent = [data.email, data.phone].filter(Boolean).join(" · ") || "email@example.com · +91 XXXXX XXXXX";
+        pv.summary.textContent = data.summary || "Write a concise 3–4 line summary highlighting outcomes, scale, and tools.";
+        pv.skills.innerHTML = ""; pv.skills.appendChild(chipsFromCSV(data.skills));
+        $("#pv-experience").textContent = data.experience || "• Role @ Company (2023–2025): improved X by Y% using Z.";
+        $("#pv-projects").textContent = data.projects || "• Project: brief what/how, tools, impact/metrics.";
+        pv.edu.textContent = data.education || "B.E. – College Name, CGPA, Year";
+
+        // Links -> chips (split by newline)
+        pv.links.innerHTML="";
+        (data.links||"").split("\n").map(s=>s.trim()).filter(Boolean).forEach(v=>{
+          const span=document.createElement("span"); span.className="chip"; span.textContent=v; pv.links.appendChild(span);
+        });
+      }
+
+      $("#btnPreview")?.addEventListener("click", updatePreview);
+
+      // Stubs for analyze/recommend - replace with your AI calls
+      $("#btnAnalyze")?.addEventListener("click", () => {
+        // Example: tweak fake scores to show UI reaction
+        const rnd = () => Math.min(95, Math.max(45, Math.round(50 + Math.random()*45)));
+        const set = (id, val) => { const el=$("#"+id); el.textContent=val; el.nextElementSibling?.firstElementChild?.style.setProperty("width", val+"%"); };
+        set("m-ats", rnd()); set("m-km", rnd()); set("m-impact", rnd());
+      });
+
+      $("#btnRecommend")?.addEventListener("click", () => {
+        const jobs = $("#jobs");
+        const template = (t, loc, comp, tags) => `
+          <article class="job">
+            <div>
+              <h4>${t}</h4>
+              <div class="meta">${loc} · ${comp}</div>
+              <div class="kw">${tags.map(k=>`<span class="chip">${k}</span>`).join("")}</div>
+            </div>
+            <div class="btns">
+              <button class="btn">View</button>
+              <button class="btn primary">Apply</button>
+            </div>
+          </article>`;
+        jobs.innerHTML = [
+          template("LLM Prompt Engineer", "Remote", "10–15 LPA", ["LLMs","Prompting","Evaluation"]),
+          template("RAG Engineer", "Hyderabad · Hybrid", "9–13 LPA", ["Vector DB","LangChain","Embeddings"]),
+          template("ML Engineer (Vision+NLP)", "Mumbai · Onsite", "8–12 LPA", ["PyTorch","Transformers","MLOps"]),
+        ].join("");
+      });
+
+      // Autopopulate preview initially
+      updatePreview();
+    })();
+  </script>
+</body>
+</html>
